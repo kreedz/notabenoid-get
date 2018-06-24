@@ -1,8 +1,11 @@
 import axios from 'axios';
 // import { createWriteStream, WriteStream } from 'fs';
 // import { join } from 'path';
+import parse5 from 'parse5';
 import { DOMParser } from 'xmldom';
-import { select } from 'xpath';
+import xmlserializer from 'xmlserializer';
+
+import xpath from 'xpath';
 
 // const args: string[] = process.argv.slice(2);
 // --directory /hello/js --bookId 56565
@@ -22,11 +25,15 @@ const bookUrl = `${baseUrl}${partBookUrl}`;
 
 async function getBookData() {
     try {
-        const bookHtml = await axios(bookUrl);
-        const parsedBook = new DOMParser().parseFromString(bookHtml.data);
+        const bookHtmlStr = await axios(bookUrl);
+        const bookHtml = parse5.parse(bookHtmlStr.data);
+        // const xhtmlStr = new XMLSerializer().serializeToString(bookHtml as Node);
+        const xhtmlStr = xmlserializer.serializeToString(bookHtml);
+        const xhtml = new DOMParser().parseFromString(xhtmlStr);
         // const chaptersIDs = select('//table[@id="Chapters"].//tr/td[2]/a/@href', parsedBook);
-        const chaptersIDs = select('//table[@id="Chapters"]', parsedBook);
-        console.log(`chaptersIDs = ${chaptersIDs}`);
+        const select = xpath.useNamespaces({ x: 'http://www.w3.org/1999/xhtml' });
+        const chapterIDs = select('//x:table[@id="Chapters"]//tr/td[2]/a/@href', xhtml);
+        console.log(`chaptersIDs = ${chapterIDs}`);
     } catch (e) {
         console.error(e);
     }
