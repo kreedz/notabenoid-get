@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "lib": ["dom", "es2015"],
+        "declaration": true,
+        "esModuleInterop": true,
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es6",
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
+        "baseUrl": "./src",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}

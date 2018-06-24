@@ -1,0 +1,13 @@
+{
+    "extends": ["tslint:latest"],
+    "rules": {
+        "quotemark": [true, "single"],
+        "semicolon": [true, "always", "ignore-interfaces"],
+        "object-literal-sort-keys": false,
+        "arrow-parens": [1, "as-needed"],
+        "member-access": [true, "no-public"],
+        "no-unused-variable": true,
+        "trailing-comma": false,
+        "no-console": false
+    }
+}

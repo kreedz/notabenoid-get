@@ -1,0 +1,23 @@
+{
+  "name": "notabenoid-get",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Artur Tukaev",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^10.3.3",
+    "@types/xmldom": "^0.1.29",
+    "tslint": "^5.10.0",
+    "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "css-select": "^2.0.0",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.27"
+  }
+}
