@@ -9,6 +9,7 @@
   "author": "Artur Tukaev",
   "license": "MIT",
   "devDependencies": {
+    "@types/cheerio": "^0.22.8",
     "@types/node": "^10.3.3",
     "@types/parse5": "^5.0.0",
     "@types/xmldom": "^0.1.29",
@@ -17,10 +18,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "css-select": "^2.0.0",
-    "parse5": "^5.0.0",
-    "xmldom": "^0.1.27",
-    "xmlserializer": "^0.6.1",
-    "xpath": "0.0.27"
+    "cheerio": "^1.0.0-rc.2",
+    "css-select": "^2.0.0"
   }
 }
