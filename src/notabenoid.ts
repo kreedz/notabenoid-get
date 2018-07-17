@@ -1,12 +1,5 @@
 import axios from 'axios';
-// import { createWriteStream, WriteStream } from 'fs';
-// import { join } from 'path';
-import parse5 from 'parse5';
-import { DOMParser } from 'xmldom';
-import xmlserializer from 'xmlserializer';
-
-import xpath from 'xpath';
-
+import * as cheerio from 'cheerio';
 // const args: string[] = process.argv.slice(2);
 // --directory /hello/js --bookId 56565
 
@@ -26,20 +19,18 @@ const bookUrl = `${baseUrl}${partBookUrl}`;
 async function getBookData() {
     try {
         const bookHtmlStr = await axios(bookUrl);
-        const bookHtml = parse5.parse(bookHtmlStr.data);
-        // const xhtmlStr = new XMLSerializer().serializeToString(bookHtml as Node);
-        const xhtmlStr = xmlserializer.serializeToString(bookHtml);
-        const xhtml = new DOMParser().parseFromString(xhtmlStr);
-        // const chaptersIDs = select('//table[@id="Chapters"].//tr/td[2]/a/@href', parsedBook);
-        const select = xpath.useNamespaces({ x: 'http://www.w3.org/1999/xhtml' });
-        const chapterIDs = select('//x:table[@id="Chapters"]//tr/td[2]/a/@href', xhtml);
-        console.log(`chaptersIDs = ${chapterIDs}`);
+        const $ = cheerio.load(bookHtmlStr.data);
+        return $('table#Chapters tr td:nth-child(2) a').toArray().map(a => {
+            const href = $(a).attr('href').split('/');
+            return href[href.length - 1];
+        });
+
     } catch (e) {
         console.error(e);
     }
 }
 
-getBookData();
+getBookData().then(data => console.log(data));
 
 // get(bookUrl, bookResponse => {
 //     files.forEach((fileName: string) => {
