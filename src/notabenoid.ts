@@ -3,8 +3,39 @@ import * as cheerio from 'cheerio';
 import { writeFile } from 'fs';
 import { join } from 'path';
 
-// const args: string[] = process.argv.slice(2);
-// --directory /hello/js --bookId 56565
+interface IArgs {
+    [key: string]: string | true;
+}
+
+interface IUrlOrBookId {
+    bookId?: string;
+    url?: string;
+}
+
+
+// notabenoid https://opennota.duckdns.org/book/69614 --dir ../nota-dir
+function getUrlOrBookId(): IUrlOrBookId {
+    const args = process.argv.slice(2).reduce((acc: IArgs, arg) => {
+        const [k, v = true] = arg.split('=');
+        acc[k] = v;
+        return acc;
+    }, {});
+    const result: IUrlOrBookId = {};
+    Object.entries(args).forEach(([k, v]) => {
+        if (v && k.length && k[0] !== '-') {
+            if (/^\d+$/.test(k)) {
+                result.bookId = k;
+            } else {
+                result.url = k;
+            }
+        }
+    });
+    return result;
+}
+const urlOrBookId = getUrlOrBookId();
+if ('url' in urlOrBookId) {
+    //
+}
 const baseUrl = 'https://opennota.duckdns.org';
 const defaultBookId = '69614';
 const getBookPartUrl = (bookId: string) => `/book/${bookId}/`;
