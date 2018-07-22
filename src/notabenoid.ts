@@ -1,4 +1,4 @@
-import axios/*, { AxiosPromise }*/ from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs';
 import { join } from 'path';
@@ -65,12 +65,11 @@ async function getChaptersUrls(): Promise<string[]> {
     });
 }
 
-// async function getChapters(urls: string): Promise<AxiosPromise<string>[]> {
-//
-// }
+async function getChapters(urls: string[]): Promise<Array<AxiosResponse<string>>> {
+    return Promise.all(urls.map(async url => axios(url)));
+}
 
-async function writeChapter(url: string): Promise<void> {
-    const chapter = await axios(url);
+function writeChapter(chapter: AxiosResponse<string>): void {
     const disposition = chapter.headers['content-disposition'];
     const [, fileName] = disposition.match(/filename="(.+)"/);
     writeFile(join(uploadDir, fileName), chapter.data, err => {
@@ -82,9 +81,9 @@ async function writeChapter(url: string): Promise<void> {
 
 async function writeChapters(): Promise<void> {
     const urls = await getChaptersUrls();
-    // const chapters = await getChapters(urls);
-    for (const url of urls) {
-        await writeChapter(url);
+    const chapters = await getChapters(urls);
+    for (const chapter of chapters) {
+        writeChapter(chapter);
     }
 }
 
