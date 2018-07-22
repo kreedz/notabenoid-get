@@ -66,7 +66,12 @@ async function getChaptersUrls(): Promise<string[]> {
 }
 
 async function getChapters(urls: string[]): Promise<Array<AxiosResponse<string>>> {
-    return Promise.all(urls.map(async url => axios(url)));
+    const getChapter = async (url: string) =>
+        axios(url).catch(err => {
+            console.error(err);
+            return null;
+        });
+    return Promise.all(urls.map(getChapter));
 }
 
 function writeChapter(chapter: AxiosResponse<string>): void {
@@ -81,7 +86,7 @@ function writeChapter(chapter: AxiosResponse<string>): void {
 
 async function writeChapters(): Promise<void> {
     const urls = await getChaptersUrls();
-    const chapters = await getChapters(urls);
+    const chapters = (await getChapters(urls)).filter(Boolean);
     for (const chapter of chapters) {
         writeChapter(chapter);
     }
