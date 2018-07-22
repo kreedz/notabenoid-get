@@ -4,35 +4,42 @@ import { writeFile } from 'fs';
 import { join } from 'path';
 
 interface IArgs {
-    [key: string]: string | true;
+    [key: string]: string;
 }
 
 interface IUrlOrBookId {
     bookId?: string;
     url?: string;
+    dir?: string;
 }
 
 class RequiredArgumentError extends Error {
     message = 'Required argument doesn\'t provided!';
 }
 
+const enum EArgKeys {
+    DIR = '--dir'
+}
+
 function getUrlOrBookId(): IUrlOrBookId {
     if (process.argv.length < 3) {
         throw new RequiredArgumentError();
     }
-    const args = process.argv.slice(2).reduce((acc: IArgs, arg) => {
-        const [k, v = true] = arg.split('=');
+    const args = process.argv.slice(2).reduce<IArgs>((acc: IArgs, arg) => {
+        const [k, v = null] = arg.split('=');
         acc[k] = v;
         return acc;
     }, {});
     const result: IUrlOrBookId = {};
     Object.entries(args).forEach(([k, v]) => {
-        if (v && k.length && k[0] !== '-') {
+        if (!v && k.length && k[0] !== '-') {
             if (/^\d+$/.test(k)) {
                 result.bookId = k;
             } else {
                 result.url = k;
             }
+        } else if (k === EArgKeys.DIR) {
+            result.dir = v;
         }
     });
     return result;
