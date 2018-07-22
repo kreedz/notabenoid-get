@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios/*, { AxiosPromise }*/ from 'axios';
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs';
 import { join } from 'path';
@@ -12,9 +12,14 @@ interface IUrlOrBookId {
     url?: string;
 }
 
+class RequiredArgumentError extends Error {
+    message = 'Required argument doesn\'t provided!';
+}
 
-// notabenoid https://opennota.duckdns.org/book/69614 --dir ../nota-dir
 function getUrlOrBookId(): IUrlOrBookId {
+    if (process.argv.length < 3) {
+        throw new RequiredArgumentError();
+    }
     const args = process.argv.slice(2).reduce((acc: IArgs, arg) => {
         const [k, v = true] = arg.split('=');
         acc[k] = v;
@@ -32,32 +37,39 @@ function getUrlOrBookId(): IUrlOrBookId {
     });
     return result;
 }
-const urlOrBookId = getUrlOrBookId();
-if ('url' in urlOrBookId) {
-    //
-}
-const baseUrl = 'https://opennota.duckdns.org';
-const defaultBookId = '69614';
-const getBookPartUrl = (bookId: string) => `/book/${bookId}/`;
-const partBookUrl = getBookPartUrl(defaultBookId);
-const bookUrl = `${baseUrl}${partBookUrl}`;
-const params = '/download?algorithm=0&skip_neg=0&skip_neg=1&author_id=0&format=s&enc=UTF-8&crlf=1';
-const uploadDir = join('./');
 
-async function getUrls() {
-    try {
-        const bookHtmlStr = await axios(bookUrl);
-        const $ = cheerio.load(bookHtmlStr.data);
-        return $('table#Chapters tr td:nth-child(2) a').toArray().map(a => {
-            const href = $(a).attr('href');
-            return baseUrl + href + params;
-        });
-    } catch (e) {
-        console.error(e);
+function getBookUrl(): string {
+    const baseUrl = 'https://opennota.duckdns.org';
+    const getBookPartUrl = (bookId: string) => `/book/${bookId}`;
+    const urlOrBookId = getUrlOrBookId();
+
+    if ('url' in urlOrBookId) {
+        let url = urlOrBookId.url;
+        if (url.slice(-1) === '/') {
+            url = url.slice(0, -1);
+        }
+        return url;
+    } else if ('bookId' in urlOrBookId) {
+        const bookPartUrl = getBookPartUrl(urlOrBookId.bookId);
+        return `${baseUrl}${bookPartUrl}`;
     }
 }
 
-async function writeChapter(url: string) {
+async function getChaptersUrls(): Promise<string[]> {
+    const bookUrl = getBookUrl();
+    const bookHtmlStr = await axios(bookUrl);
+    const $ = cheerio.load(bookHtmlStr.data);
+    return $('table#Chapters tr td:nth-child(2) a').toArray().map(a => {
+        const chapterId = '/' + $(a).attr('href').split('/').slice(-1);
+        return bookUrl + chapterId + params;
+    });
+}
+
+// async function getChapters(urls: string): Promise<AxiosPromise<string>[]> {
+//
+// }
+
+async function writeChapter(url: string): Promise<void> {
     const chapter = await axios(url);
     const disposition = chapter.headers['content-disposition'];
     const [, fileName] = disposition.match(/filename="(.+)"/);
@@ -68,13 +80,15 @@ async function writeChapter(url: string) {
     });
 }
 
-async function writeChapters() {
-    try {
-        const urls = await getUrls();
-        urls.forEach(url => writeChapter(url));
-    } catch (e) {
-        console.error(e);
+async function writeChapters(): Promise<void> {
+    const urls = await getChaptersUrls();
+    // const chapters = await getChapters(urls);
+    for (const url of urls) {
+        await writeChapter(url);
     }
 }
 
-writeChapters();
+const params = '/download?algorithm=0&skip_neg=0&skip_neg=1&author_id=0&format=s&enc=UTF-8&crlf=1';
+const uploadDir = join('./');
+
+writeChapters().catch(err => console.error(err));
