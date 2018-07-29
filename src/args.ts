@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
 
 const enum EArgKeys {
@@ -11,8 +12,10 @@ interface IArgs {
 export interface IParsedArgs {
     bookId?: string;
     url?: string;
-    dir?: string;
+    dir: string;
 }
+
+const defaultDir = join('.');
 
 export function getParsedArgs(): IParsedArgs {
     if (process.argv.length < 3) {
@@ -23,7 +26,9 @@ export function getParsedArgs(): IParsedArgs {
         acc[k] = v;
         return acc;
     }, {});
-    const result: IParsedArgs = {};
+    const result: IParsedArgs = {
+        dir: defaultDir
+    };
     Object.entries(args).forEach(([k, v]) => {
         if (!v && k.length && k[0] !== '-') {
             if (/^\d+$/.test(k)) {

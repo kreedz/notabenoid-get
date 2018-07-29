@@ -53,7 +53,8 @@ class Notabenoid {
     writeChapter(chapter: AxiosResponse<string>): void {
         const disposition = chapter.headers['content-disposition'];
         const [, fileName] = disposition.match(/filename="(.+)"/);
-        writeFile(join(uploadDir, fileName), chapter.data, err => {
+
+        writeFile(join(this.getArgs().dir, fileName), chapter.data, err => {
             if (err) {
                 throw err;
             }
@@ -70,8 +71,6 @@ class Notabenoid {
 }
 
 const params = '/download?algorithm=0&skip_neg=0&skip_neg=1&author_id=0&format=s&enc=UTF-8&crlf=1';
-const uploadDir = join('./');
 
 const notabenoid = new Notabenoid();
 notabenoid.writeChapters().catch(err => console.error(err));
-
