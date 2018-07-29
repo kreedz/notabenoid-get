@@ -7,7 +7,7 @@ interface IArgs {
     [key: string]: string;
 }
 
-interface IUrlOrBookId {
+interface IParsedArgs {
     bookId?: string;
     url?: string;
     dir?: string;
@@ -21,16 +21,16 @@ const enum EArgKeys {
     DIR = '--dir'
 }
 
-function getUrlOrBookId(): IUrlOrBookId {
+function getParsedArgs(): IParsedArgs {
     if (process.argv.length < 3) {
         throw new RequiredArgumentError();
     }
-    const args = process.argv.slice(2).reduce<IArgs>((acc: IArgs, arg) => {
+    const args = process.argv.slice(2).reduce<IArgs>((acc, arg) => {
         const [k, v = null] = arg.split('=');
         acc[k] = v;
         return acc;
     }, {});
-    const result: IUrlOrBookId = {};
+    const result: IParsedArgs = {};
     Object.entries(args).forEach(([k, v]) => {
         if (!v && k.length && k[0] !== '-') {
             if (/^\d+$/.test(k)) {
@@ -48,16 +48,16 @@ function getUrlOrBookId(): IUrlOrBookId {
 function getBookUrl(): string {
     const baseUrl = 'https://opennota.duckdns.org';
     const getBookPartUrl = (bookId: string) => `/book/${bookId}`;
-    const urlOrBookId = getUrlOrBookId();
+    const args = getParsedArgs();
 
-    if ('url' in urlOrBookId) {
-        let url = urlOrBookId.url;
+    if ('url' in args) {
+        let url = args.url;
         if (url.slice(-1) === '/') {
             url = url.slice(0, -1);
         }
         return url;
-    } else if ('bookId' in urlOrBookId) {
-        const bookPartUrl = getBookPartUrl(urlOrBookId.bookId);
+    } else if ('bookId' in args) {
+        const bookPartUrl = getBookPartUrl(args.bookId);
         return `${baseUrl}${bookPartUrl}`;
     }
 }
