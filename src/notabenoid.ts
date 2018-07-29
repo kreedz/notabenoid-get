@@ -2,9 +2,14 @@ import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs';
 import { join } from 'path';
+import querystring from 'querystring';
 import { getParsedArgs, IParsedArgs } from './args';
 
 class Notabenoid {
+    static params = '/download?' + querystring.stringify({
+        algoritm: 0, skip_neg: [0, 1], author_id: 0, format: 's', enc: 'UTF-8', crlf: 1
+    });
+
     private _args: IParsedArgs = null;
 
     getArgs() {
@@ -37,7 +42,7 @@ class Notabenoid {
         const $ = cheerio.load(bookHtmlStr.data);
         return $('table#Chapters tr td:nth-child(2) a').toArray().map(a => {
             const chapterId = '/' + $(a).attr('href').split('/').slice(-1);
-            return bookUrl + chapterId + params;
+            return bookUrl + chapterId + Notabenoid.params;
         });
     }
 
@@ -69,8 +74,6 @@ class Notabenoid {
         }
     }
 }
-
-const params = '/download?algorithm=0&skip_neg=0&skip_neg=1&author_id=0&format=s&enc=UTF-8&crlf=1';
 
 const notabenoid = new Notabenoid();
 notabenoid.writeChapters().catch(err => console.error(err));
