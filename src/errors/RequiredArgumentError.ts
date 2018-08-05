@@ -11,7 +11,6 @@ export const ErrorMessage: { [k in keyof typeof ErrorCode]: string } = {
 export const ErrorURLOrIDMissingMessage = ErrorMessage[ErrorCode.URL_OR_ID_MISSING];
 
 export class RequiredArgumentError extends Error {
-    message = 'Required argument doesn\'t provided!';
     constructor(message: string = ErrorMessage[ErrorCode.DEFAULT]) {
         super(message);
     }
