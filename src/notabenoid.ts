@@ -4,6 +4,8 @@ import { writeFile } from 'fs';
 import { join } from 'path';
 import querystring from 'querystring';
 import { getParsedArgs, IParsedArgs } from './args';
+import { RequiredArgumentError } from './errors/RequiredArgumentError';
+import { messages } from './messages';
 
 class Notabenoid {
     static params = '/download?' + querystring.stringify({
@@ -76,4 +78,10 @@ class Notabenoid {
 }
 
 const notabenoid = new Notabenoid();
-notabenoid.writeChapters().catch(err => console.error(err));
+notabenoid.writeChapters().catch(err => {
+    if (err instanceof RequiredArgumentError) {
+        console.log(messages.USAGE);
+    } else {
+        console.error(err);
+    }
+});
