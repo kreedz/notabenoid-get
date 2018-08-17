@@ -7,7 +7,7 @@ import { getParsedArgs, IParsedArgs } from './args';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
 import { messages } from './messages';
 
-class Notabenoid {
+export class NotabenoidGet {
     static params = '/download?' + querystring.stringify({
         algoritm: 0, skip_neg: [0, 1], author_id: 0, format: 's', enc: 'UTF-8', crlf: 1
     });
@@ -44,7 +44,7 @@ class Notabenoid {
         const $ = cheerio.load(bookHtmlStr.data);
         return $('table#Chapters tr td:nth-child(2) a').toArray().map(a => {
             const chapterId = '/' + $(a).attr('href').split('/').slice(-1);
-            return bookUrl + chapterId + Notabenoid.params;
+            return bookUrl + chapterId + NotabenoidGet.params;
         });
     }
 
@@ -75,13 +75,14 @@ class Notabenoid {
             this.writeChapter(chapter);
         }
     }
-}
 
-const notabenoid = new Notabenoid();
-notabenoid.writeChapters().catch(err => {
-    if (err instanceof RequiredArgumentError) {
-        console.log(messages.USAGE);
-    } else {
-        console.error(err);
+    run(): void {
+        this.writeChapters().catch(err => {
+            if (err instanceof RequiredArgumentError) {
+                console.log(messages.USAGE);
+            } else {
+                console.error(err);
+            }
+        });
     }
-});
+}

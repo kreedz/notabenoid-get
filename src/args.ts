@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { ErrorURLOrIDMissingMessage, RequiredArgumentError } from './errors/RequiredArgumentError';
+import { RequiredArgumentError } from './errors/RequiredArgumentError';
 
 const enum EArgKeys {
     DIR = '--dir'
@@ -19,7 +19,7 @@ const defaultDir = join('.');
 
 export function getParsedArgs(): IParsedArgs {
     if (process.argv.length < 3) {
-        throw new RequiredArgumentError(ErrorURLOrIDMissingMessage);
+        throw new RequiredArgumentError();
     }
     const args = process.argv.slice(2).reduce<IArgs>((acc, arg) => {
         const [k, v = null] = arg.split('=');
@@ -42,7 +42,7 @@ export function getParsedArgs(): IParsedArgs {
     });
 
     if (!result.url && !result.bookId) {
-        throw new RequiredArgumentError(ErrorURLOrIDMissingMessage);
+        throw new RequiredArgumentError();
     }
 
     return result;
