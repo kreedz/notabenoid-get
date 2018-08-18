@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
 
-const enum EArgKeys {
+export const enum EArgKeys {
     DIR = '--dir'
 }
 
@@ -15,13 +15,13 @@ export interface IParsedArgs {
     dir: string;
 }
 
-const defaultDir = join('.');
+export const defaultDir = join('.');
 
-export function getParsedArgs(): IParsedArgs {
-    if (process.argv.length < 3) {
+export function getParsedArgs(argv: string[] = process.argv): IParsedArgs {
+    if (argv.length < 3) {
         throw new RequiredArgumentError();
     }
-    const args = process.argv.slice(2).reduce<IArgs>((acc, arg) => {
+    const args = argv.slice(2).reduce<IArgs>((acc, arg) => {
         const [k, v = null] = arg.split('=');
         acc[k] = v;
         return acc;
