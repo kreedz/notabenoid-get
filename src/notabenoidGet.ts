@@ -12,13 +12,13 @@ export class NotabenoidGet {
         algoritm: 0, skip_neg: [0, 1], author_id: 0, format: 's', enc: 'UTF-8', crlf: 1
     });
 
-    private _args: IParsedArgs = null;
+    private args: IParsedArgs = null;
 
     getArgs() {
-        if (!this._args) {
-            this._args = getParsedArgs();
+        if (!this.args) {
+            this.args = getParsedArgs();
         }
-        return this._args;
+        return this.args;
     }
 
     getBookUrl(): string {
