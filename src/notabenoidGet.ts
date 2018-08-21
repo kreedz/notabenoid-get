@@ -14,14 +14,24 @@ export class NotabenoidGet {
 
     private args: IParsedArgs = null;
 
-    getArgs() {
+    run(): void {
+        this.writeChapters().catch(err => {
+            if (err instanceof RequiredArgumentError) {
+                console.log(messages.USAGE);
+            } else {
+                console.error(err);
+            }
+        });
+    }
+
+    private getArgs(): IParsedArgs {
         if (!this.args) {
             this.args = getParsedArgs();
         }
         return this.args;
     }
 
-    getBookUrl(): string {
+    private getBookUrl(): string {
         const baseUrl = 'https://opennota.duckdns.org';
         const getBookPartUrl = (bookId: string) => `/book/${bookId}`;
         const args = this.getArgs();
@@ -38,7 +48,7 @@ export class NotabenoidGet {
         }
     }
 
-    async getChaptersUrls(): Promise<string[]> {
+    private async getChaptersUrls(): Promise<string[]> {
         const bookUrl = this.getBookUrl();
         const bookHtmlStr = await axios(bookUrl);
         const $ = cheerio.load(bookHtmlStr.data);
@@ -48,7 +58,7 @@ export class NotabenoidGet {
         });
     }
 
-    async getChapters(urls: string[]): Promise<Array<AxiosResponse<string>>> {
+    private async getChapters(urls: string[]): Promise<Array<AxiosResponse<string>>> {
         const getChapter = async (url: string) =>
             axios(url).catch(err => {
                 console.error(err);
@@ -57,7 +67,7 @@ export class NotabenoidGet {
         return Promise.all(urls.map(getChapter));
     }
 
-    writeChapter(chapter: AxiosResponse<string>): void {
+    private writeChapter(chapter: AxiosResponse<string>): void {
         const disposition = chapter.headers['content-disposition'];
         const [, fileName] = disposition.match(/filename="(.+)"/);
 
@@ -68,21 +78,11 @@ export class NotabenoidGet {
         });
     }
 
-    async writeChapters(): Promise<void> {
+    private async writeChapters(): Promise<void> {
         const urls = await this.getChaptersUrls();
         const chapters = (await this.getChapters(urls)).filter(Boolean);
         for (const chapter of chapters) {
             this.writeChapter(chapter);
         }
-    }
-
-    run(): void {
-        this.writeChapters().catch(err => {
-            if (err instanceof RequiredArgumentError) {
-                console.log(messages.USAGE);
-            } else {
-                console.error(err);
-            }
-        });
     }
 }
