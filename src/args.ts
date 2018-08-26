@@ -5,9 +5,11 @@ export const enum EArgKeys {
     DIR = '--dir'
 }
 
-interface IProcessArgv {
+interface ISplittedArgv {
     [key: string]: string;
 }
+
+type TProcessArgv = string[];
 
 export interface IArgs {
     bookId?: string;
@@ -21,18 +23,18 @@ export class Args {
 
     private args: IArgs = null;
 
-    getArgs(): IArgs {
+    getArgs(argv: TProcessArgv = process.argv): IArgs {
         if (!this.args) {
-            this.args = this.getArgsFromArgv();
+            this.args = this.getArgsFromArgv(argv);
         }
         return this.args;
     }
 
-    private getArgsFromArgv(argv: string[] = process.argv): IArgs {
+    private getArgsFromArgv(argv: TProcessArgv): IArgs {
         if (argv.length < 3) {
             throw new RequiredArgumentError();
         }
-        const splittedArgv = argv.slice(2).reduce<IProcessArgv>((acc, arg) => {
+        const splittedArgv = argv.slice(2).reduce<ISplittedArgv>((acc, arg) => {
             const [k, v = null] = arg.split('=');
             acc[k] = v;
             return acc;
