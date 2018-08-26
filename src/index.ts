@@ -1,8 +1,8 @@
-import { NotabenoidGet } from './notabenoidGet';
+import { App } from './App';
 
 if (require.main === module) {
-    const notabenoidGet = new NotabenoidGet();
-    notabenoidGet.run();
+    const app = new App();
+    app.run();
 }
 
-export { NotabenoidGet };
+export { App };
