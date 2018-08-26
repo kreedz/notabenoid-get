@@ -6,7 +6,7 @@ export class App {
     async run(): Promise<void> {
         try {
             const notabenoidGet = new NotabenoidGet();
-            await notabenoidGet.run();
+            await notabenoidGet.writeChapters();
         } catch (err) {
             if (err instanceof RequiredArgumentError) {
                 console.log(messages.USAGE);
