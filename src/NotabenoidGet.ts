@@ -1,8 +1,8 @@
-import { ServicesContainer } from './services/ServicesContainer';
+import { IServices } from './services/services';
 
 export class NotabenoidGet {
 
-    private services: ServicesContainer = new ServicesContainer();
+    constructor(private services: IServices) { }
 
     async writeChapters(): Promise<void> {
         const { bookService, chapterService } = this.services;
