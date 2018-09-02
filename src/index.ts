@@ -1,7 +1,7 @@
-import { app } from './App';
+import { runApp } from './App';
 
 if (require.main === module) {
-    app().catch(err => console.error(err));
+    runApp();
 }
 
-export { app };
+export { runApp };

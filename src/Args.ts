@@ -1,6 +1,5 @@
 import { join } from 'path';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
-import { messages } from './messages';
 
 export const enum EArgKeys {
     DIR = '--dir'
@@ -26,14 +25,7 @@ export class Args {
 
     getArgs(argv: TProcessArgv = process.argv): IArgs {
         if (!this.args) {
-            try {
-                this.args = this.getArgsFromArgv(argv);
-            } catch (err) {
-                if (err instanceof RequiredArgumentError) {
-                    console.log(messages.USAGE);
-                    process.exit();
-                }
-            }
+            this.args = this.getArgsFromArgv(argv);
         }
         return this.args;
     }
