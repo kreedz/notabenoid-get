@@ -31,7 +31,7 @@ export class ChapterService extends Service {
         const disposition = chapter.headers['content-disposition'];
         const [, fileName] = disposition.match(/filename="(.+)"/);
 
-        writeFile(join(this.args.getArgs().dir, fileName), chapter.data, err => {
+        writeFile(join(this.args.dir, fileName), chapter.data, err => {
             if (err) {
                 throw err;
             }

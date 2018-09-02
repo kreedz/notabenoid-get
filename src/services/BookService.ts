@@ -11,7 +11,7 @@ export class BookService extends Service {
     private getBookUrl(): string {
         const baseUrl = 'https://opennota.duckdns.org';
         const getBookPartUrl = (bookId: string) => `/book/${bookId}`;
-        const args = this.args.getArgs();
+        const args = this.args;
 
         if ('url' in args) {
             let url = args.url;

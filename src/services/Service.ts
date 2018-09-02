@@ -1,7 +1,7 @@
-import { Args } from '../args';
+import { IArgs } from '../args';
 
 export class Service {
 
-    protected args: Args = new Args();
+    constructor(protected args: IArgs) { }
 
 }
