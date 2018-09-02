@@ -25,16 +25,17 @@ export class Args {
     private args: IArgs = null;
 
     getArgs(argv: TProcessArgv = process.argv): IArgs {
-        try {
-            if (!this.args) {
+        if (!this.args) {
+            try {
                 this.args = this.getArgsFromArgv(argv);
-            }
-            return this.args;
-        } catch (err) {
-            if (err instanceof RequiredArgumentError) {
-                console.log(messages.USAGE);
+            } catch (err) {
+                if (err instanceof RequiredArgumentError) {
+                    console.log(messages.USAGE);
+                    process.exit();
+                }
             }
         }
+        return this.args;
     }
 
     private getArgsFromArgv(argv: TProcessArgv): IArgs {
