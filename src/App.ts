@@ -15,7 +15,6 @@ export async function runApp(): Promise<void> {
     await app().catch(err => {
         if (err instanceof RequiredArgumentError) {
             console.log(messages.USAGE);
-            process.exit();
         } else {
             console.error(err);
         }
