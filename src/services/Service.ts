@@ -1,4 +1,4 @@
-import { IArgs } from '../args';
+import { IArgs } from '../Args';
 
 export class Service {
 

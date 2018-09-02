@@ -1,9 +1,8 @@
-import { Args } from './args';
+import { Args } from './Args';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
 import { messages } from './messages';
-import { getServices } from './services/services';
-
 import { NotabenoidGet } from './NotabenoidGet';
+import { getServices } from './services/services';
 
 export class App {
     async run(): Promise<void> {

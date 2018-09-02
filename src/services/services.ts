@@ -1,4 +1,4 @@
-import { IArgs } from '../args';
+import { IArgs } from '../Args';
 import { BookService } from './BookService';
 import { ChapterService } from './ChapterService';
 

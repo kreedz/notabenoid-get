@@ -1,4 +1,4 @@
-import { Args, defaultDir, EArgKeys, IArgs } from '../src/args';
+import { Args, defaultDir, EArgKeys, IArgs } from '../src/Args';
 import { RequiredArgumentError } from '../src/errors/RequiredArgumentError';
 
 describe('Arguments', () => {
