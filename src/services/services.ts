@@ -1,4 +1,4 @@
-import { IArgs } from '../Args';
+import { IArgs } from '../ParseArgs';
 import { BookService } from './BookService';
 import { ChapterService } from './ChapterService';
 

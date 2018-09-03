@@ -1,4 +1,4 @@
-import { IArgs } from '../Args';
+import { IArgs } from '../ParseArgs';
 
 export class Service {
 
