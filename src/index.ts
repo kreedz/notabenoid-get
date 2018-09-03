@@ -1,7 +1,5 @@
-import { runApp } from './App';
+import { app, cliApp } from './App';
 
-if (require.main === module) {
-    runApp();
-}
+cliApp(require.main, module);
 
-export { runApp };
+export { app };
