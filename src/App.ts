@@ -1,25 +1,30 @@
+import { AppFactory, IAppFactory } from './AppFactory';
 import { RequiredArgumentError } from './errors/RequiredArgumentError';
 import { messages } from './messages';
-import { NotabenoidGet } from './NotabenoidGet';
-import { ParseArgs } from './ParseArgs';
-import { getServices } from './services/services';
+import { IArgs } from './ParseArgs';
 
-export async function app(args = new ParseArgs()): Promise<void> {
-    const services = getServices(args.getArgs());
-    const notabenoidGet = new NotabenoidGet(services);
-    await notabenoidGet.writeChapters();
-}
+export class App {
+    constructor(private factory: IAppFactory = new AppFactory()) { }
 
-export async function cliApp(main: NodeModule, module: NodeModule): Promise<void> {
-    try {
-        if (main === module) {
-            await app();
-        }
-    } catch (err) {
-        if (err instanceof RequiredArgumentError) {
-            console.log(messages.USAGE);
-        } else {
-            console.error(err);
+    async run(args: IArgs): Promise<void> {
+        const services = this.factory.getServices(args);
+        const controller = this.factory.getController(services);
+        await controller.obtainChapters();
+    }
+
+    async runCli(main: NodeModule, nodeModule: NodeModule): Promise<void> {
+        try {
+            if (main === nodeModule) {
+                const args = this.factory.getArgs();
+                await this.run(args);
+            }
+        } catch (err) {
+            if (err instanceof RequiredArgumentError) {
+                console.log(messages.USAGE);
+            } else {
+                console.error(err);
+            }
         }
     }
+
 }

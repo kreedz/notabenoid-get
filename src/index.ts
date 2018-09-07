@@ -1,5 +1,6 @@
-import { app, cliApp } from './App';
+import { App } from './App';
 
-cliApp(require.main, module);
+const app = new App();
+app.runCli(require.main, module);
 
-export { app };
+export { App };

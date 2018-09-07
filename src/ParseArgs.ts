@@ -27,7 +27,7 @@ export class ParseArgs {
         this.args = this.getArgsFromArgv(argv);
     }
 
-    getArgs(): IArgs {
+    get(): IArgs {
         return this.args;
     }
 
