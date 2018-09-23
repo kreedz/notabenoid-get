@@ -1,10 +1,14 @@
-import { IServices } from './services/services';
+import { IServices } from './services/ServicesFactory';
 
-export class NotabenoidGet {
+export interface IController {
+    obtainChapters(): Promise<void>;
+}
+
+export class Controller implements IController {
 
     constructor(private services: IServices) { }
 
-    async writeChapters(): Promise<void> {
+    async obtainChapters(): Promise<void> {
         const { bookService, chapterService } = this.services;
         const book = await bookService.getBook();
         const urls = chapterService.getUrlsOfChapters(book);

@@ -19,14 +19,15 @@ export interface IArgs {
 
 export const defaultDir = join('.');
 
-export class Args {
+export class ParseArgs {
 
     private args: IArgs = null;
 
-    getArgs(argv: TProcessArgv = process.argv): IArgs {
-        if (!this.args) {
-            this.args = this.getArgsFromArgv(argv);
-        }
+    constructor(argv: TProcessArgv = process.argv) {
+        this.args = this.getArgsFromArgv(argv);
+    }
+
+    get(): IArgs {
         return this.args;
     }
 

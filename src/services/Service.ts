@@ -1,5 +1,5 @@
 import axios, { AxiosPromise, AxiosResponse } from 'axios';
-import { IArgs } from '../Args';
+import { IArgs } from '../ParseArgs';
 
 export type TGet = AxiosPromise<string>;
 export type TGetResponse = AxiosResponse<string>;

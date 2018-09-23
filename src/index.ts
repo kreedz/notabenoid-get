@@ -1,7 +1,6 @@
-import { runApp } from './App';
+import { App } from './App';
 
-if (require.main === module) {
-    runApp();
-}
+const app = new App();
+app.runCli(require.main, module);
 
-export { runApp };
+export { App };
