@@ -1,11 +1,10 @@
-import axios, { AxiosResponse } from 'axios';
-import { Service } from './Service';
+import { Service, TGet } from './Service';
 
 export class BookService extends Service {
 
-    getBook(): Promise<AxiosResponse<string>> {
+    getBook(): TGet {
         const url = this.getBookUrl();
-        return axios(url);
+        return this.get(url);
     }
 
     private getBookUrl(): string {
